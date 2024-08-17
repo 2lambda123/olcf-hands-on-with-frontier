@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------
-This program will fill 2 NxN matrices with random numbers, compute a matrix multiply on the CPU 
+This program will fill 2 NxN matrices with random numbers, compute a matrix multiply on the CPU
 and then on the GPU, compare the values for correctness, and print _SUCCESS_ (if successful).
 Written by Tom Papatheodore
 ------------------------------------------------------------------------------------------------*/
@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
     double max_value = 10.0;
 
     // Set A, B, C
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
+    for(int i=0; i<N; i++) {
+        for(int j=0; j<N; j++) {
             A[i*N + j] = (double)rand()/(double)(RAND_MAX/max_value);
             B[i*N + j] = (double)rand()/(double)(RAND_MAX/max_value);
             C[i*N + j] = 0.0;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     /* Copy host arrays (A,B,C) to device arrays (d_A,d_B,d_C) -------------------------*/
     gpuErrorCheck( hipMemcpy(d_A, A, N*N*sizeof(double), hipMemcpyHostToDevice) );
     gpuErrorCheck( hipMemcpy(d_B, B, N*N*sizeof(double), hipMemcpyHostToDevice) );
-    gpuErrorCheck( hipMemcpy(d_C, C, N*N*sizeof(double), hipMemcpyHostToDevice) );	
+    gpuErrorCheck( hipMemcpy(d_C, C, N*N*sizeof(double), hipMemcpyHostToDevice) );
 
     /* Perform Matrix Multiply on CPU --------------------------------------------------*/
 
@@ -69,31 +69,31 @@ int main(int argc, char *argv[])
     hipblasCreate(&handle);
 
     /************************************************************/
-	/* TODO: Look up the hipblasDgemm routine and add it here to */
-	/*       perform a matrix multiply on the GPU                */
-	/*                                                           */
-	/* NOTE: This will be similar to the CPU dgemm above but     */ 
-	/*       will use d_A, d_B, and d_C instead                  */
-	/*       use HIPBLAS_OP_N and HIPBLAS_OP_N for the           */
-	/*       2nd and 3rd option.                                 */
-	/*************************************************************/
+    /* TODO: Look up the hipblasDgemm routine and add it here to */
+    /*       perform a matrix multiply on the GPU                */
+    /*                                                           */
+    /* NOTE: This will be similar to the CPU dgemm above but     */
+    /*       will use d_A, d_B, and d_C instead                  */
+    /*       use HIPBLAS_OP_N and HIPBLAS_OP_N for the           */
+    /*       2nd and 3rd option.                                 */
+    /*************************************************************/
 
 
 
 
 
 
-	/* Copy values of d_C back from GPU and compare with values calculated on CPU ------*/
+    /* Copy values of d_C back from GPU and compare with values calculated on CPU ------*/
 
-    // Copy values of d_C (computed on GPU) into host array C_fromGPU	
-    double *C_fromGPU = (double*)malloc(N*N*sizeof(double));	
+    // Copy values of d_C (computed on GPU) into host array C_fromGPU
+    double *C_fromGPU = (double*)malloc(N*N*sizeof(double));
     gpuErrorCheck( hipMemcpy(C_fromGPU, d_C, N*N*sizeof(double), hipMemcpyDeviceToHost) );
 
     // Check if CPU and GPU give same results
     double tolerance = 1.0e-13;
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
-            if(fabs((C[i*N + j] - C_fromGPU[i*N + j])/C[i*N + j]) > tolerance){
+    for(int i=0; i<N; i++) {
+        for(int j=0; j<N; j++) {
+            if(fabs((C[i*N + j] - C_fromGPU[i*N + j])/C[i*N + j]) > tolerance) {
                 printf("Element C[%d][%d] (%f) and C_fromGPU[%d][%d] (%f) do not match!\n", i, j, C[i*N + j], i, j, C_fromGPU[i*N + j]);
                 return EXIT_FAILURE;
             }
